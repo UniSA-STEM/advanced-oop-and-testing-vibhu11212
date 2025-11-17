@@ -16,7 +16,7 @@ class Enclosure:
         self.__enclosure_id = enclosure_id
         self.__size = size # sq meter
         self.__environmental_type = environmental_type
-        self.__is_clean = True
+        self.is_clean = True
         self.__animals_housing = []
         self.__allowed_species = None
 
