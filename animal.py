@@ -6,6 +6,7 @@ ID: 110446905
 Username: potvy001
 This is my own work as defined by the University's Academic Integrity Policy.
 '''
+from health_record import HealthRecord
 
 from abc import ABC, abstractmethod
 
@@ -13,26 +14,26 @@ class Animal(ABC):
     """
     Abstract base Class for all animals
     """
-    def __init__(self, name, species, age,
-                 dietary_needs , environment):
+    def __init__(self, name, specie, age,
+                 dietary_need , environment):
         self.name = name
-        self.__species = species
+        self.specie = specie
         self.age = age
-        self.__dietary_needs = dietary_needs
-        self.__required_environment = environment
-        self.__health_records = []  # To store health record
+        self.dietary_need = dietary_need
+        self.required_environment = environment
+        self.__health_records = []
 
     def get_name(self):
         return self.__name
 
-    def get_species(self):
-        return self.__species
+    def get_specie(self):
+        return self.__specie
 
     def get_age(self):
         return self.__age
 
-    def get_dietary_needs(self):
-        return self.__dietary_needs
+    def get_dietary_need(self):
+        return self.__dietary_need
 
     def get_required_environment(self):
         return self.__required_environment
@@ -50,38 +51,81 @@ class Animal(ABC):
             raise ValueError("Age must not be negative")
         self.__age = age
 
-    def set_dietary_needs(self, dietary_needs):
-        self.__dietary_needs = dietary_needs
+    def set_dietary_need(self, dietary_need):
+        if not isinstance(dietary_need, str):
+            raise TypeError("Dietary needs must be a string")
+        self.__dietary_need = dietary_need
+
+    def set_specie(self, specie):
+        if not isinstance(specie, str):
+            raise TypeError("Species must be a string")
+        self.__specie = specie
+
+    def set_required_environment(self, environment):
+        if not isinstance(environment, str):
+            raise TypeError("Environment must be a string")
+        self.__required_environment = environment
 
     name = property(get_name, set_name)
-    species = property(get_species)
+    specie = property(get_specie, set_specie)
     age = property(get_age, set_age)
-    dietary_needs = property(get_dietary_needs, set_dietary_needs)
-    required_environment = property(get_required_environment)
+    dietary_need = property(get_dietary_need, set_dietary_need)
+    required_environment = property(get_required_environment,
+                                    set_required_environment)
     health_records = property(get_health_records)
+
+    @abstractmethod
+    def make_sound(self):
+        pass
+
+    def eat(self):
+        return f"{self.name} is eating {self.dietary_need}"
+
+    def sleep(self):
+        return f"{self.name} is sleeping"
+
+    def add_health_record(self, record):
+        if not isinstance(record, HealthRecord):
+            raise TypeError("Must be a HealthRecord object")
+        self.__health_records.append(record)
+
+    def is_sick(self):
+        for record in self.__health_records:
+            if record.is_active:
+                return True
+        return False
 
 class Mammal(Animal):
     """
     Represents a mammal, inheriting from Animal class
     """
-    def __init__(self, name, species, age,
-                 dietary_needs, environment):
-        super().__init__(name, species, age, dietary_needs, environment)
+    def __init__(self, name, specie, age,
+                 dietary_need, environment):
+        super().__init__(name, specie, age, dietary_need, environment)
+
+    def make_sound(self):
+        return "Roaring"
 
 
 class Bird(Animal):
     """
     Represents a bird, inheriting from Animal class
     """
-    def __init__(self, name, species, age,
-                 dietary_needs, environment):
-        super().__init__(name, species, age, dietary_needs, environment)
+    def __init__(self, name, specie, age,
+                 dietary_need, environment):
+        super().__init__(name, specie, age, dietary_need, environment)
+
+    def make_sound(self):
+        return "Chirping"
 
 
 class Reptile(Animal):
     """
     Represents a reptile, inheriting from Animal class
     """
-    def __init__(self, name, species, age,
-                 dietary_needs, environment):
-        super().__init__(name, species, age, dietary_needs, environment)
+    def __init__(self, name, specie, age,
+                 dietary_need, environment):
+        super().__init__(name, specie, age, dietary_need, environment)
+
+    def make_sound(self):
+        return "Hiss"
