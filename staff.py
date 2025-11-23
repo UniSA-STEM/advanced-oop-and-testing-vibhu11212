@@ -6,7 +6,9 @@ ID: 110100110
 Username: bizvy001
 This is my own work as defined by the University's Academic Integrity Policy.
 '''
+from health_record import HealthRecord
 from abc import ABC, abstractmethod
+from enclosure import Enclosure
 
 class Staff(ABC):
     """
@@ -30,6 +32,10 @@ class Staff(ABC):
     name = property(get_name, set_name)
     staff_id = property(get_staff_id)
 
+    @abstractmethod
+    def duty(self):
+        pass
+
 class Zookeeper(Staff):
     """
     Represents a Zookeeper, inheriting from Staff
@@ -43,9 +49,41 @@ class Zookeeper(Staff):
 
     assigned_enclosures = property(get_assigned_enclosures)
 
+    def assign_enclosure(self, enclosure):
+        if isinstance(enclosure, Enclosure):
+            self.__assigned_enclosures.append(enclosure)
+
+    def duty(self):
+        for enclosure in self.assigned_enclosures:
+            enclosure.clean()
+            print(f"{self.name} cleaned {enclosure.enclosure_id}")
+
+    def feed_animal(self, animal):
+        print(f"{self.name} is feeding {animal.name}")
+        animal.eat()
+
+    def clean_enclosure(self, enclosure):
+        print(f"{self.name} is cleaning {enclosure.enclosure_id}")
+        enclosure.clean()
+
 class Veterinarian(Staff):
     """
     Represents a Veterinarian, inheriting from Staff
     """
     def __init__(self, name, staff_id):
         super().__init__(name, staff_id)
+
+    def duty(self):
+        print(f"{self.name} is ready for health checks")
+
+    def health_check(self, animal):
+        print(f"Checking {animal.name}")
+        if animal.is_sick():
+            print(f"{animal.name} is sick")
+        else:
+            print(f"{animal.name} is healthy")
+
+    def create_health_record(self, animal, issue, severity, treatment_plan):
+        record = HealthRecord(issue, severity, treatment_plan)
+        animal.add_health_record(record)
+        return record
